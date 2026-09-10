@@ -9,6 +9,9 @@ while True:
 
     if user_input.isdigit():
         stock = int(user_input)
+    elif user_input.startswith('-') and user_input.replace('-', '', 1).isdigit():
+        print("No negative number in user input")
+        continue
     else:
         print("User input is not a integer")
-        
+        continue
