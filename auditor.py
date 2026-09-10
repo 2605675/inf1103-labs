@@ -1,10 +1,12 @@
 inventory = 0
+failed_entries = 0
 user_input = ""
 
 while True:
     user_input = input("Enter a stock quantity: ")
-    print(user_input[1:])
     if user_input == "quit":
+        print("Total Units Processed: ", inventory)
+        print("Number of Failed/Rejected Entries: ", failed_entries)
         break
 
     if user_input.isdigit():
@@ -17,7 +19,9 @@ while True:
             continue
     elif user_input.startswith("-") and user_input.replace("-", "", 1).isdigit():
         print("No negative number in user input")
+        failed_entries += 1
         continue
     else:
         print("User input is not a integer")
+        failed_entries += 1
         continue
