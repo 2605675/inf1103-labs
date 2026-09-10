@@ -6,3 +6,5 @@ while True:
 
     if user_input == "quit":
         break
+
+    stock = int(user_input)
