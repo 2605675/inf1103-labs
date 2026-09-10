@@ -7,4 +7,8 @@ while True:
     if user_input == "quit":
         break
 
-    stock = int(user_input)
+    if user_input.isdigit():
+        stock = int(user_input)
+    else:
+        print("User input is not a integer")
+        
