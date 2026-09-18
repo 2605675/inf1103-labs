@@ -23,15 +23,19 @@ def get_valid_input():
         failed_entries += 1
         get_valid_input()
 
-    return
+    get_valid_input()
+
+def process_delivery(current_total, new_value):
+    current_total += new_value
+    return current_total
 
 while True:
     valid_input = get_valid_input()
-    
-    # if valid_input == "quit":
-    #     print("Total Units Processed: ", inventory)
-    #     print("Number of Failed/Rejected Entries: ", failed_entries)
 
-    # inventory += stock
-    # if inventory > 500:
-    #     print("Inventory exceed 500 units")
+    if valid_input == "quit":
+        print("Total Units Processed: ", inventory)
+        print("Number of Failed/Rejected Entries: ", failed_entries)    
+        break
+
+    inventory = process_delivery(inventory, valid_input)
+
