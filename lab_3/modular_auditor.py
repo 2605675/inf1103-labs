@@ -33,14 +33,21 @@ def calculate_tax(amount):
     tax = amount * 0.10
     return tax
 
+def generate_report(inventory, failed_entries):
+    print("Total Units Processed: ", inventory)
+    print("Number of Failed/Rejected Entries: ", failed_entries)  
+    return
+
 while True:
     valid_input = get_valid_input()
 
     if valid_input == "quit":
-        print("Total Units Processed: ", inventory)
-        print("Number of Failed/Rejected Entries: ", failed_entries)    
+        generate_report(inventory, failed_entries) 
         break
 
     inventory = process_delivery(inventory, valid_input)
     tax = calculate_tax(inventory)
 
+    if inventory > 500:
+        print("Inventory exceed 500 units")
+        break
