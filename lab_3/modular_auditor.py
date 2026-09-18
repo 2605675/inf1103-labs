@@ -2,28 +2,26 @@ inventory = 0
 failed_entries = 0
 user_input = ""
 
-def get_valid_input():
+def get_valid_input(failed_entries = 0):
     user_input = input("Enter a stock quantity: ")
+    
     if user_input == "quit":
-        return user_input
-
+        return user_input, failed_entries
 
     if user_input.isdigit():
         user_input = int(user_input)
-        return user_input
-
+        return user_input, failed_entries
 
     elif user_input.startswith("-") and user_input.replace("-", "", 1).isdigit():
         print("No negative number in user input")
         failed_entries += 1
-        get_valid_input()
+        return get_valid_input(failed_entries)
 
     else:
         print("User input is not a integer")
         failed_entries += 1
-        get_valid_input()
+        return get_valid_input(failed_entries)
 
-    get_valid_input()
 
 def process_delivery(current_total, new_value):
     current_total += new_value
@@ -39,7 +37,8 @@ def generate_report(inventory, failed_entries):
     return
 
 while True:
-    valid_input = get_valid_input()
+    valid_input, fails = get_valid_input()
+    failed_entries += fails
 
     if valid_input == "quit":
         generate_report(inventory, failed_entries) 
