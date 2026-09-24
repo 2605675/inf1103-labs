@@ -1,0 +1,70 @@
+total = 0
+failed_entries = 0
+user_input = ""
+
+def get_valid_input(failed_entries = 0):
+    user_input = input("Enter a stock quantity: ")
+    
+    if user_input == "quit":
+        return user_input, failed_entries
+
+    if user_input.isdigit():
+        user_input = int(user_input)
+        return user_input, failed_entries
+
+    elif user_input.startswith("-") and user_input.replace("-", "", 1).isdigit():
+        print("No negative number in user input")
+        failed_entries += 1
+        return get_valid_input(failed_entries)
+
+    else:
+        print("User input is not a integer")
+        failed_entries += 1
+        return get_valid_input(failed_entries)
+
+
+def process_delivery(current_total, new_value):
+    current_total += new_value
+    return current_total
+
+def calculate_tax(amount):
+    tax = amount * 0.10
+    return tax
+
+def generate_report(inventory, failed_entries):
+    print("Total Units Processed: ", inventory)
+    print("Number of Failed/Rejected Entries: ", failed_entries)  
+    return
+
+def load_inventory():
+    try:
+        with open("./lab_4/inventory.txt", mode='r') as file:
+            total = int(file.readline().strip())
+            inventory = [line.strip() for line in file]
+    except:
+        total = 0
+        inventory = []
+        
+    return total, inventory
+
+total, inventory = load_inventory()
+print(inventory)
+print("Current Orders:\n")
+for line in inventory:
+    print(line)
+print("")
+
+while True:
+    valid_input, fails = get_valid_input()
+    failed_entries += fails
+
+    if valid_input == "quit":
+        generate_report(total, failed_entries) 
+        break
+
+    total = process_delivery(total, valid_input)
+    tax = calculate_tax(total)
+
+    if total > 500:
+        print("Inventory exceed 500 units")
+        break
