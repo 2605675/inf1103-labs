@@ -51,25 +51,32 @@ def generate_report(inventory, failed_entries):
 
 def load_inventory():
     try:
-        with open("./lab_4/inventory.txt", mode="r") as file:
+        with open("inventory.txt", mode="r") as file:
             total = int(file.readline().strip())
             inventory = [line.strip() for line in file]
             if inventory:
                 order_id = int(inventory[-1].split(",", 1)[0])
             else:
                 order_id = 0
-    except FileNotFoundError:
+    except (FileNotFoundError, ValueError):
         total = 0
         inventory = []
         order_id = 0
 
     return total, inventory, order_id
 
+def save_inventory(total,inventory):
+    with open("inventory.txt", mode="w") as file:
+        file.write(str(total) + "\n")
+        
+        for order in inventory:
+            file.write(order + "\n")
 
-total, inventory, order_id = load_inventory()
+total, old_inventory, order_id = load_inventory()
+new_inventory = []
 
 print("Current Orders:\n")
-for line in inventory:
+for line in old_inventory:
     print(line)
 print("")
 
@@ -79,6 +86,14 @@ while True:
 
     if valid_product == "quit" or valid_quantity == "quit":
         generate_report(total, failed_entries)
+        print("New Order Added:")
+        
+        for line in new_inventory:
+            print(line)
+        
+        inventory = old_inventory + new_inventory
+        save_inventory(total, inventory)
+        print("\n\nOrder successfully saved to orders.txt")
         break
 
     total = process_delivery(total, valid_quantity)
@@ -88,6 +103,7 @@ while True:
 
     order_id += 1
     new_order = f"{order_id}, {valid_product}, {valid_quantity}"
-    inventory.append(new_order)
+    new_inventory.append(new_order)
     tax = calculate_tax(total)
-    print("New Order Added:\n" + new_order + "\n\nOrder successfully saved to orders.txt")
+    
+    
