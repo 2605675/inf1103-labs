@@ -84,12 +84,9 @@ def load_inventory():
     return inventory
 
 
-def save_inventory(total, inventory):
-    with open("inventory.txt", mode="w") as file:
-        file.write(str(total) + "\n")
-
-        for order in inventory:
-            file.write(order + "\n")
+def save_inventory(inventory):
+    with open("inventory.json", mode="w") as file:
+        json.dump(inventory, file, indent=4)
 
 
 def display_all(inventory):
@@ -141,11 +138,13 @@ def menu(inventory):
     elif option == 4:
         search_product(inventory)
     elif option == 5:
+        print("\nSaving inventory...")
         save_inventory(inventory)
+        print("Inventory saved successfully to inventory.json.\n")
     elif option == 6:
-        print("Saving inventory before exit...")
+        print("\nSaving inventory before exit...")
         save_inventory(inventory)
-        print("Inventory saved successfully.")
+        print("Inventory saved successfully.\n")
         
         print("Thank you for using Inventory Management System.\nProgram terminated.")
         return True
