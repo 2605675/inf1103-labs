@@ -91,3 +91,84 @@ class file_handle:
 
     def save_inventory(self, products):
         self.__write_file("inventory.json", products)
+
+
+
+class menu:
+    def __init__(self, handle, inventory):
+        self.__handle = handle
+        self.__inventory = inventory
+
+        products = self.__handle.load_inventory()
+        self.__inventory.store_all_products(products)
+
+        self.display_menu()
+
+    def display_menu(self):
+        while True:
+            print("----------- MENU -----------")
+            print(
+                "1. Display All Products\n2. Add Product\n3. Update Stock\n4. Search Product\n5. Save Inventory\n6. Exit"
+            )
+            print("----------------------------\n")
+
+            option = input("Enter option: ")
+
+            try:
+                option = int(option)
+            except ValueError:
+                print("Invalid input. Please enter a number between 1 and 6.\n")
+                continue
+
+            if option == 1:
+                print("\n--- Product List ---")
+                self.__inventory.display_products()
+                print()
+
+            elif option == 2:
+                print("\nAdd New Product")
+
+                # Product ID validation
+                while True:
+                    product_id = input("Product ID: ").strip()
+                    if not product_id:
+                        print("Error: Product ID cannot be empty.")
+                        continue
+                    if self.__inventory.search_product(product_id) is not None:
+                        print("Error: A product with this ID already exists.")
+                        continue
+                    break
+
+                # Product Name validation
+                while True:
+                    input_product = input("Product Name: ").strip()
+                    if not input_product:
+                        print("Error: Product name cannot be empty.")
+                        continue
+                    break
+
+                # Price validation
+                while True:
+                    try:
+                        price = float(input("Price: "))
+                        if price < 0:
+                            print("Error: Price cannot be negative.")
+                            continue
+                        break
+                    except ValueError:
+                        print("Error: Please enter a valid number for price.")
+
+                # Stock validation
+                while True:
+                    try:
+                        input_quantity = int(input("Stock Quantity: "))
+                        if input_quantity < 0:
+                            print("Error: Stock cannot be negative.")
+                            continue
+                        break
+                    except ValueError:
+                        print("Error: Please enter a valid whole number for stock.")
+
+                item = Product(product_id, input_product, price, input_quantity)
+                self.__inventory.add_product(item)
+                print("\nProduct added successfully!\n")
