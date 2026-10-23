@@ -1,3 +1,6 @@
+import json
+
+
 class Product:
     def __init__(self, product_id, name, price, stock):
         self.__product_id = product_id
@@ -93,7 +96,6 @@ class file_handle:
         self.__write_file("inventory.json", products)
 
 
-
 class menu:
     def __init__(self, handle, inventory):
         self.__handle = handle
@@ -172,3 +174,68 @@ class menu:
                 item = Product(product_id, input_product, price, input_quantity)
                 self.__inventory.add_product(item)
                 print("\nProduct added successfully!\n")
+
+            elif option == 3:
+                print("\nUpdate Stock")
+                id = input("Enter Product ID: ").strip()
+                product = self.__inventory.search_product(id)
+
+                if product is not None:
+                    print("\nProduct Found:")
+                    print(f"Name: {product.get_name()}")
+                    print(f"Current Stock: {product.get_stock()}")
+
+                    while True:
+                        try:
+                            new_stock = int(input("\nNew Stock Quantity: "))
+                            if new_stock < 0:
+                                print("Error: Stock cannot be negative.")
+                                continue
+                            break
+                        except ValueError:
+                            print("Error: Please enter a valid whole number.")
+
+                    product.update_stock(new_stock)
+                    print("Stock updated successfully.\n")
+                else:
+                    print("Product not found.\n")
+
+            elif option == 4:
+                print("\nSearch Product")
+                id = input("Enter Product ID: ").strip()
+                product = self.__inventory.search_product(id)
+
+                if product is not None:
+                    print("\nProduct Found")
+                    print("------------------------------------------------")
+                    print(f"ID: {product.get_product_id()} ")
+                    print(f"Name: {product.get_name()} ")
+                    print(f"Price: ${product.get_price():.2f} ")
+                    print(f"Stock: {product.get_stock()} ")
+                    print("------------------------------------------------\n")
+                else:
+                    print("Product not found.\n")
+
+            elif option == 5:
+                print("\nSaving inventory...")
+                products = self.__inventory.get_inventory()
+                self.__handle.save_inventory(products)
+                print("Inventory saved successfully to inventory.json.\n")
+
+            elif option == 6:
+                print("\nSaving inventory before exit...")
+                products = self.__inventory.get_inventory()
+                self.__handle.save_inventory(products)
+                print("Inventory saved successfully.\n")
+                print(
+                    "Thank you for using Inventory Management System.\nProgram terminated."
+                )
+                break
+            else:
+                print("Invalid option. Please choose between 1 and 6.\n")
+
+
+if __name__ == "__main__":
+    handler = file_handle()
+    my_inventory = Inventory()
+    app = menu(handler, my_inventory)
