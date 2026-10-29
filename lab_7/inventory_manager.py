@@ -30,14 +30,6 @@ class Product(ABC):
             f"Price: ${self.__price:.2f} | Stock: {self.__stock}"
         )
 
-    def to_dict(self):
-        return {
-            "product_id": self.__product_id,
-            "name": self.__name,
-            "price": self.__price,
-            "stock": self.__stock,
-        }
-
     @abstractmethod
     def get_fufilment_info(self):
         pass
@@ -53,9 +45,10 @@ class PhysicalProduct(Product, CanBeShipped):
     def __init__(self, product_id, name, price, stock, weight):
         super().__init__(product_id, name, price, stock)
         self.__weight = weight
+        self.__cost = self.calculate_shipping_cost()
 
     def display_information(self):
-        return f" {super().display_information()} | Weight: {self.__weight}"
+        return f" {super().display_information()} | Weight: {self.__weight} | Cost: {self.__cost}"
 
     def get_fufilment_info(self):
         print("Product requires physical shipping")
@@ -64,6 +57,18 @@ class PhysicalProduct(Product, CanBeShipped):
     def calculate_shipping_cost(self):
         cost = self.__weight * 2
         return cost
+
+    def to_dict(self):
+        return {
+            "Physical": {
+                "product_id": super().get_product_id(),
+                "name": super().get_name(),
+                "price": super().get_price(),
+                "stock": super().get_stock(),
+                "weight": self.__weight,
+                "cost": self.__cost,
+            }
+        }
 
 
 class DigitalProduct(Product):
@@ -80,6 +85,17 @@ class DigitalProduct(Product):
         print("Product is delivered digitally")
         return
 
+    def to_dict(self):
+        return {
+            "Digital": {
+                "product_id": super().get_product_id(),
+                "name": super().get_name(),
+                "price": super().get_price(),
+                "stock": super().get_stock(),
+                "download_size": self.__download_size,
+            }
+        }
+
 
 class Inventory:
     def __init__(self):
@@ -88,9 +104,25 @@ class Inventory:
     def store_all_products(self, product_list):
         if product_list:
             for item in product_list:
-                product = Product(
-                    item["product_id"], item["name"], item["price"], item["stock"]
-                )
+                product_type, details = next(iter(item.items()))
+
+                if product_type == "Physical":
+                    product = PhysicalProduct(
+                        details["product_id"],
+                        details["name"],
+                        details["price"],
+                        details["stock"],
+                        details["weight"],
+                    )
+                elif product_type == "Digital":
+                    product = DigitalProduct(
+                        details["product_id"],
+                        details["name"],
+                        details["price"],
+                        details["stock"],
+                        details["download_size"],
+                    )
+
                 self.__products.append(product)
 
     def add_product(self, product):
@@ -214,7 +246,53 @@ class menu:
                     except ValueError:
                         print("Error: Please enter a valid whole number for stock.")
 
-                item = Product(product_id, input_product, price, input_quantity)
+                # Product Type
+                while True:
+                    product_type = (
+                        input("Physical or Digital Product: ").strip().lower()
+                    )
+                    if not input_product:
+                        print("Error: Product type cannot be empty.")
+                        continue
+                    elif product_type not in ["physical", "digital"]:
+                        print("Error: Please enter either 'physical' or 'digital'.")
+                        continue
+                    break
+
+                if product_type == "physical":
+                    # Weight validation
+                    while True:
+                        try:
+                            weight = float(input("Weight: "))
+                            if weight < 0:
+                                print("Error: Weight cannot be negative.")
+                                continue
+                            break
+                        except ValueError:
+                            print("Error: Please enter a valid number for Weight.")
+
+                    item = PhysicalProduct(
+                        product_id, input_product, price, input_quantity, weight
+                    )
+
+                elif product_type == "digital":
+                    # Download size validation
+                    while True:
+                        try:
+                            d_size = float(input("Download size: "))
+                            if d_size < 0:
+                                print("Error: Download size cannot be negative.")
+                                continue
+                            break
+                        except ValueError:
+                            print(
+                                "Error: Please enter a valid number for Download size."
+                            )
+
+                    item = DigitalProduct(
+                        product_id, input_product, price, input_quantity, d_size
+                    )
+
                 self.__inventory.add_product(item)
                 print("\nProduct added successfully!\n")
 
@@ -279,12 +357,12 @@ class menu:
 
 
 if __name__ == "__main__":
-    # handler = file_handle()
-    # my_inventory = Inventory()
-    # app = menu(handler, my_inventory)
-    test = PhysicalProduct(1, "test", 2000, 10, 20)
-    print(test.display_information())
-    test.get_fufilment_info()
-    test = DigitalProduct(1, "test", 2000, 10, 20)
-    print(test.display_information())
-    test.get_fufilment_info()
+    handler = file_handle()
+    my_inventory = Inventory()
+    app = menu(handler, my_inventory)
+    # test = PhysicalProduct(1, "test", 2000, 10, 20)
+    # print(test.display_information())
+    # test.get_fufilment_info()
+    # test = DigitalProduct(1, "test", 2000, 10, 20)
+    # print(test.display_information())
+    # test.get_fufilment_info()
