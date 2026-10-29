@@ -1,7 +1,8 @@
 import json
+from abc import ABC, abstractmethod
 
 
-class Product:
+class Product(ABC):
     def __init__(self, product_id, name, price, stock):
         self.__product_id = product_id
         self.__name = name
@@ -37,14 +38,32 @@ class Product:
             "stock": self.__stock,
         }
 
+    @abstractmethod
+    def get_fufilment_info(self):
+        pass
 
-class PhysicalProduct(Product):
+
+class CanBeShipped(ABC):
+    @abstractmethod
+    def calculate_shipping_cost(self):
+        pass
+
+
+class PhysicalProduct(Product, CanBeShipped):
     def __init__(self, product_id, name, price, stock, weight):
         super().__init__(product_id, name, price, stock)
         self.__weight = weight
 
     def display_information(self):
         return f" {super().display_information()} | Weight: {self.__weight}"
+
+    def get_fufilment_info(self):
+        print("Product requires physical shipping")
+        return
+
+    def calculate_shipping_cost(self):
+        cost = self.__weight * 2
+        return cost
 
 
 class DigitalProduct(Product):
@@ -53,7 +72,13 @@ class DigitalProduct(Product):
         self.__download_size = download_size
 
     def display_information(self):
-        return f" {super().display_information()} | Download size: {self.__download_size}"
+        return (
+            f" {super().display_information()} | Download size: {self.__download_size}"
+        )
+
+    def get_fufilment_info(self):
+        print("Product is delivered digitally")
+        return
 
 
 class Inventory:
@@ -259,6 +284,7 @@ if __name__ == "__main__":
     # app = menu(handler, my_inventory)
     test = PhysicalProduct(1, "test", 2000, 10, 20)
     print(test.display_information())
-    
+    test.get_fufilment_info()
     test = DigitalProduct(1, "test", 2000, 10, 20)
     print(test.display_information())
+    test.get_fufilment_info()
