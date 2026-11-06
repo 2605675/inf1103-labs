@@ -1,0 +1,8 @@
+class Supplier:
+    def __init__(self, supplier_id, name, contact_email):
+        self.__supplier_id = supplier_id
+        self.__name = name
+        self.__contact_email = contact_email
+
+    def display_information(self):
+        return f"Supplier_id: {self.__supplier_id} | Supplier Name: {self.__name} | Supplier Contact_email: {self.__contact_email}"
