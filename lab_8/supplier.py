@@ -6,3 +6,10 @@ class Supplier:
 
     def display_information(self):
         return f"Supplier_id: {self.__supplier_id} | Supplier Name: {self.__name} | Supplier Contact_email: {self.__contact_email}"
+
+    def to_dict(self):
+        return {
+            "supplier_id": self.__supplier_id,
+            "name": self.__name,
+            "contact_email": self.__contact_email,
+        }

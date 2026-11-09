@@ -139,8 +139,8 @@ class menu:
 
                 if product is not None:
                     print("\nProduct Found:")
-                    print(f"Name: {product.get_name()}")
-                    print(f"Current Stock: {product.get_stock()}")
+                    print(f"Name: {product.name}")
+                    print(f"Current Stock: {product.stock}")
 
                     while True:
                         try:
@@ -174,10 +174,10 @@ class menu:
                 if product is not None:
                     print("\nProduct Found")
                     print("------------------------------------------------")
-                    print(f"ID: {product.get_product_id()} ")
-                    print(f"Name: {product.get_name()} ")
-                    print(f"Price: ${product.get_price():.2f} ")
-                    print(f"Stock: {product.get_stock()} ")
+                    print(f"ID: {product.product_id} ")
+                    print(f"Name: {product.name} ")
+                    print(f"Price: ${product.price:.2f} ")
+                    print(f"Stock: {product.stock} ")
                     print("------------------------------------------------\n")
                 else:
                     print("Product not found.\n")

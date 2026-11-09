@@ -38,6 +38,15 @@ class Product(ABC):
     def display_supplier(self):
         return f"{self.__supplier.display_information()}"
 
+    def to_dict(self):
+        return {
+            "product_id": self.__product_id,
+            "name": self.__name,
+            "price": self.__price,
+            "stock": self.__stock,
+            "supplier": self.__supplier.to_dict(),
+        }
+
     @abstractmethod
     def get_fufilment_info(self):
         pass

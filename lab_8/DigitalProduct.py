@@ -7,22 +7,14 @@ class DigitalProduct(Product):
 
     def display_information(self):
         info, supplier = super().display_information()
-        return (
-            f"{info} | Download size: {self.__download_size}"
-            f"\n{supplier}"
-        )
+        print(f"{info} | Download size: {self.__download_size}" f"\n{supplier}")
 
     def get_fufilment_info(self):
         print("Product is delivered digitally")
         return
 
     def to_dict(self):
-        return {
-            "Digital": {
-                "product_id": super().get_product_id(),
-                "name": super().get_name(),
-                "price": super().get_price(),
-                "stock": super().get_stock(),
-                "download_size": self.__download_size,
-            }
-        }
+        data = super().to_dict()
+        data["download_size"] = self.__download_size
+        
+        return {"Digital": data}
