@@ -1,19 +1,21 @@
 from PhysicalProduct import PhysicalProduct
 from DigitalProduct import DigitalProduct
 from supplier import Supplier
+from file_handle import file_handle
+from Inventory import Inventory
 
 
 class menu:
-    def __init__(self, handle, inventory):
-        self.__handle = handle
-        self.__inventory = inventory
+    def __init__(self, handle: file_handle, inventory: Inventory) -> None:
+        self.__handle: file_handle = handle
+        self.__inventory: Inventory = inventory
 
         products = self.__handle.load_inventory()
         self.__inventory.store_all_products(products)
 
         self.display_menu()
 
-    def display_menu(self):
+    def display_menu(self) -> None:
         while True:
             print("----------- MENU -----------")
             print(
@@ -26,7 +28,7 @@ class menu:
             try:
                 option = int(option)
             except ValueError:
-                print("Invalid input. Please enter a number between 1 and 6.\n")
+                print("Invalid input. Please enter a number between 1 and 7.\n")
                 continue
 
             if option == 1:
@@ -43,7 +45,7 @@ class menu:
                     if not product_id:
                         print("Error: Product ID cannot be empty.")
                         continue
-                    if self.__inventory.search_product(product_id) is not None:
+                    if self.__inventory.find_product(product_id) is not None:
                         print("Error: A product with this ID already exists.")
                         continue
                     break
@@ -83,7 +85,7 @@ class menu:
                     product_type = (
                         input("Physical or Digital Product: ").strip().lower()
                     )
-                    if not input_product:
+                    if not product_type:
                         print("Error: Product type cannot be empty.")
                         continue
                     elif product_type not in ["physical", "digital"]:
@@ -134,8 +136,8 @@ class menu:
 
             elif option == 3:
                 print("\nUpdate Stock")
-                id = input("Enter Product ID: ").strip()
-                product = self.__inventory.search_product(id)
+                product_id = input("Enter Product ID: ").strip()
+                product = self.__inventory.find_product(product_id)
 
                 if product is not None:
                     print("\nProduct Found:")
@@ -159,17 +161,17 @@ class menu:
 
             elif option == 4:
                 print("\nRemove Product")
-                id = input("Enter Product ID: ").strip()
-                product = self.__inventory.search_product(id)
+                product_id = input("Enter Product ID: ").strip()
+                product = self.__inventory.find_product(product_id)
                 if product is not None:
-                    self.__inventory.remove_product(id)
+                    self.__inventory.remove_product(product_id)
                 else:
                     print("Product not found.\n")
 
             elif option == 5:
                 print("\nSearch Product")
-                id = input("Enter Product ID: ").strip()
-                product = self.__inventory.search_product(id)
+                product_id = input("Enter Product ID: ").strip()
+                product = self.__inventory.find_product(product_id)
 
                 if product is not None:
                     print("\nProduct Found")
@@ -200,7 +202,7 @@ class menu:
             else:
                 print("Invalid option. Please choose between 1 and 7.\n")
 
-    def get_supplier(self):
+    def get_supplier(self) -> Supplier:
         # Supplier ID validation
         while True:
             supplier_id = input("Supplier ID: ").strip()
